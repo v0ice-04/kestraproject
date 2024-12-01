@@ -1,0 +1,80 @@
+id: disaster-response-automation
+namespace: disaster.platform
+description: "Automated Disaster Response Platform using free APIs"
+
+tasks:
+  # Fetch weather data from OpenWeatherMap API
+  - id: fetch-weather
+    uri: "https://api.openweathermap.org/data/2.5/weather?q={{ parameters.city }}&appid=e1ea88b30304d1e489fa943245533dbc"
+    method: "GET"
+    outputs:
+      - name: weather
+        path: "$.main"
+
+  # Fetch earthquake data from USGS Earthquake API
+  - id: fetch-earthquake
+    uri: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
+    method: "GET"
+    outputs:
+      - name: earthquakes
+        path: "$.features"
+
+  # Fetch disaster alerts from ReliefWeb API
+  - id: fetch-alerts
+    uri: "https://api.reliefweb.int/v1/reports?appname=disaster-platform"
+    method: "GET"
+    outputs:
+      - name: alerts
+        path: "$.data"
+
+  # Process disaster data using Python script
+  - id: process-data
+    files:
+      process.py: |
+        import datetime
+
+        def process_disasters(weather, earthquakes, alerts):
+            processed = []
+            for quake in earthquakes:
+                if quake['properties']['mag'] > 4.5:
+                    processed.append({
+                        "type": "Earthquake",
+                        "location": quake['properties']['place'],
+                        "magnitude": quake['properties']['mag'],
+                        "timestamp": datetime.datetime.utcfromtimestamp(quake['properties']['time'] / 1000).isoformat()
+                    })
+            for alert in alerts:
+                processed.append({
+                    "type": alert['fields']['disaster_type'][0],
+                    "location": alert['fields']['country'][0]['name'],
+                    "severity": "Critical" if "Severe" in alert['fields']['title'] else "Moderate",
+                    "timestamp": alert['fields']['date']['created']
+                })
+            return processed
+
+        weather = {{ outputs.fetch-weather }}
+        earthquakes = {{ outputs.fetch-earthquake }}
+        alerts = {{ outputs.fetch-alerts }}
+        result = process_disasters(weather, earthquakes, alerts)
+        print(result)
+        return result
+    outputs:
+      - name: processed_data   # The name for the output variable
+        path: "{{ result }}"   # Path referencing the variable produced by the task
+
+  # Notify via email
+  - id: notify-email
+    from: "no-reply@disaster-platform.com"
+    to: ["emergency_team@example.com"]
+    subject: "Disaster Alert: {{ outputs.process-data[0].type }}"
+    body: |
+      A {{ outputs.process-data[0].type }} has occurred in {{ outputs.process-data[0].location }}.
+      Severity: {{ outputs.process-data[0].severity }}.
+      Timestamp: {{ outputs.process-data[0].timestamp }}.
+
+variables:
+  parameters:
+    city: "New York"
+
+secrets:
+  - openweather_api_key: "e1ea88b30304d1e489fa943245533dbc"
