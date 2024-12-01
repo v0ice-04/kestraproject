@@ -74,7 +74,7 @@ Execute the workflow with the following command:
 
 ```bash
 kestra execute disaster.platform
-
+```
 ## Monitor Execution  
 
 - View real-time execution logs in the Kestra UI.  
@@ -97,7 +97,7 @@ disaster-response-platform/
 ├── secrets.yaml                   # Secure API keys and secrets
 ├── README.md                      # Project documentation
 └── requirements.txt               # Python dependencies for processing script
-
+```
 
 ## Acknowledgments
 
