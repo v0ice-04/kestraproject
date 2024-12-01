@@ -50,48 +50,60 @@ The **Disaster Response Automation Platform** is an open-source system designed 
    ```bash
    git clone https://github.com/your-username/disaster-response-platform.git
    cd disaster-response-platform
-Deploy workflows
-Upload the Kestra workflow YAML file:
+## Deploy Workflows  
 
-kestra upload disaster-platform.yaml
+1. **Upload Workflows**  
+   Use the following command to upload the Kestra workflow YAML file:  
+   ```bash
+   kestra upload disaster-platform.yaml
 Configure Secrets
 Replace the placeholder in secrets.openweather_api_key with your OpenWeatherMap API key.
 
 Set Variables
-Update parameters.city in the workflow to specify the target city for weather monitoring.
+Update the parameters.city in the workflow to specify the target city for weather monitoring.
 
-Usage
-Start the Kestra server:
-kestra start
+## Usage
 
-Trigger the workflow:
+1. **Start the Kestra Server**  
+   Start the Kestra server with the following command:  
+   ```bash
+   kestra start
+## Trigger the Workflow  
 
-bash
+Execute the workflow with the following command:  
+
+```bash
 kestra execute disaster.platform
 
-Monitor execution:
+## Monitor Execution  
 
-View real-time execution logs in the Kestra UI.
-Check email notifications for disaster alerts.
+- View real-time execution logs in the Kestra UI.  
+- Check email notifications for disaster alerts.
 
-Project Structure
+
+## Project Structure
+
+```plaintext
 disaster-response-platform/
 ├── workflows/
-│   ├── disaster-platform.yaml     # Kestra workflow definition /n
+│   ├── disaster-platform.yaml     # Kestra workflow definition
 ├── tasks/
-│   ├── fetch-weather/             # Kestra task for weather data /n
-│   ├── fetch-earthquake/          # Kestra task for earthquake data  /n
-│   ├── fetch-alerts/              # Kestra task for disaster alerts  /n
-│   ├── process-data/              # Kestra task for data processing  /n
-│   ├── notify-email/              # Kestra task for email notification  /n
-├── variables.yaml                 # Workflow parameters and variables  /n
-├── secrets.yaml                   # Secure API keys and secrets  /n
-├── README.md                      # Project documentation  /n
-└── requirements.txt               # Python dependencies for processing script  /n
+│   ├── fetch-weather/             # Kestra task for weather data
+│   ├── fetch-earthquake/          # Kestra task for earthquake data
+│   ├── fetch-alerts/              # Kestra task for disaster alerts
+│   ├── process-data/              # Kestra task for data processing
+│   ├── notify-email/              # Kestra task for email notification
+├── variables.yaml                 # Workflow parameters and variables
+├── secrets.yaml                   # Secure API keys and secrets
+├── README.md                      # Project documentation
+└── requirements.txt               # Python dependencies for processing script
 
-Acknowledgments
-Kestra
-OpenWeatherMap API
-USGS Earthquake API
-ReliefWeb API
-Feel free to reach out if you have any questions or suggestions!
+
+## Acknowledgments
+
+- [Kestra](https://kestra.io/)
+- [OpenWeatherMap API](https://openweathermap.org/api)
+- [USGS Earthquake API](https://earthquake.usgs.gov/fdsnws/event/1/)
+- [ReliefWeb API](https://api.reliefweb.int/)
+
+
